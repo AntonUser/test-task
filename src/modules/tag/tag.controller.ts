@@ -14,7 +14,7 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Payload } from 'src/common/decorators/user.decorator';
+import { Payload } from 'src/common/decorators/payload.decorator';
 import { IPayload } from 'src/common/interfaces/payload.interface';
 import { QueryResponseDto } from './dto/query-response.dto';
 import { TagCreateResponseDto } from './dto/tag-create-response.dto';

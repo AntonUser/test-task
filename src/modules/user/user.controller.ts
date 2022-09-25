@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { Payload } from 'src/common/decorators/user.decorator';
+import { Payload } from 'src/common/decorators/payload.decorator';
 import { IPayload } from 'src/common/interfaces/payload.interface';
 import { UserPutResponseDto } from './dto/user-put-response.dto';
 import { UserPutDto } from './dto/user-put.dto';
