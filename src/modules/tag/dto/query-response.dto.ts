@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { MetaDto } from './meta.dto';
-import { TagCreateResponseDto } from './tag-create-response.dto';
+import { TagResponseDto } from './tag-create-response.dto';
 
 export class QueryResponseDto {
-  @ApiProperty({ type: TagCreateResponseDto, isArray: true })
-  data: TagCreateResponseDto[];
+  @ApiProperty({ type: TagResponseDto, isArray: true })
+  data: TagResponseDto[];
 
   @ApiProperty({ type: MetaDto })
   meta: MetaDto;

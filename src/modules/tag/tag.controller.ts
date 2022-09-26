@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -17,8 +19,9 @@ import {
 import { Payload } from 'src/common/decorators/payload.decorator';
 import { IPayload } from 'src/common/interfaces/payload.interface';
 import { QueryResponseDto } from './dto/query-response.dto';
-import { TagCreateResponseDto } from './dto/tag-create-response.dto';
+import { TagResponseDto } from './dto/tag-create-response.dto';
 import { TagCreateDto } from './dto/tag-create.dto';
+import { TagUpdateDto } from './dto/tag-update.dto';
 import { TagDto } from './dto/tag.dto';
 import { TagQuery } from './queries/tag.query';
 import { TagService } from './tag.service';
@@ -37,7 +40,7 @@ export class TagController {
   }
 
   @Get('/:id')
-  @ApiOkResponse({ type: TagCreateResponseDto })
+  @ApiOkResponse({ type: TagResponseDto })
   findById(@Param('id') id: number) {
     return this.service.findOneOrFailWithCreator(id);
   }
@@ -46,5 +49,21 @@ export class TagController {
   @ApiOkResponse({ type: QueryResponseDto })
   find(@Query() qyery: TagQuery) {
     return this.service.findTags(qyery);
+  }
+
+  @Put('/:id')
+  @ApiOkResponse({ type: QueryResponseDto })
+  updateTag(
+    @Payload() payload: IPayload,
+    @Param('id') id: number,
+    @Body() dto: TagUpdateDto,
+  ) {
+    return this.service.updateTag(id, payload, dto);
+  }
+
+  @Delete('/:id')
+  @ApiOkResponse({ type: QueryResponseDto })
+  deleteTags(@Payload() payload: IPayload, @Param('id') id: number) {
+    return this.service.delete(id, payload);
   }
 }

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UserShortDto } from 'src/modules/user/dto/user-short.dto';
 
-export class TagCreateResponseDto {
+export class TagResponseDto {
   @ApiProperty({ type: UserShortDto })
   creator: UserShortDto;
 
