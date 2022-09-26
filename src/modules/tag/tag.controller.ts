@@ -62,7 +62,6 @@ export class TagController {
   }
 
   @Delete('/:id')
-  @ApiOkResponse({ type: QueryResponseDto })
   deleteTags(@Payload() payload: IPayload, @Param('id') id: number) {
     return this.service.delete(id, payload);
   }
