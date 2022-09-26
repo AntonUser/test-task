@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -59,5 +63,12 @@ export class AuthService {
   async logout(payload: IPayload): Promise<void> {
     const { sub } = payload;
     await this.userService.delete(sub);
+  }
+
+  async refresh(userId: string): Promise<TokenDto> {
+    if (!(await this.userService.findOne(userId))) {
+      throw new ForbiddenException();
+    }
+    return this.getToken(userId);
   }
 }
