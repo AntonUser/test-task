@@ -5,7 +5,7 @@ import { User } from './entities/user.entity';
 import { SigninDto } from '../auth/dto/signin.dto';
 import * as bcrypt from 'bcrypt';
 import { UserDto } from './dto/user.dto';
-import { UserTag } from './entities/user-tag.entity';
+import { UserTag } from '../user-tag/entities/user-tag.entity';
 import { TagService } from '../tag/tag.service';
 import { TagDto } from '../tag/dto/tag.dto';
 import { UserPutDto } from './dto/user-put.dto';

@@ -3,7 +3,7 @@ import { TagService } from './tag.service';
 import { TagController } from './tag.controller';
 import { Tag } from './entities/tag.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserTag } from '../user/entities/user-tag.entity';
+import { UserTag } from '../user-tag/entities/user-tag.entity';
 import { User } from '../user/entities/user.entity';
 
 @Module({

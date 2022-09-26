@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { UserTagModule } from './modules/user-tag/user-tag.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { AuthModule } from './modules/auth/auth.module';
       entities: [`${__dirname}/**/*.entity{.ts,.js}`],
       synchronize: true,
     }),
+    UserTagModule,
   ],
   controllers: [AppController],
   providers: [AppService],

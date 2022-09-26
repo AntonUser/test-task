@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPayload } from 'src/common/interfaces/payload.interface';
 import { In, Repository } from 'typeorm';
-import { UserTag } from '../user/entities/user-tag.entity';
+import { UserTag } from '../user-tag/entities/user-tag.entity';
 import { User } from '../user/entities/user.entity';
 import { QueryResponseDto } from './dto/query-response.dto';
 import { TagResponseDto } from './dto/tag-create-response.dto';
