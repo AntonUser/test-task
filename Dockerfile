@@ -1,4 +1,4 @@
-FROM node:16-alpine as base
+FROM node:14-alpine as base
 WORKDIR /usr/app
 RUN apk update && apk add bash
 SHELL ["/bin/bash", "-c"]
@@ -18,8 +18,6 @@ FROM base as build
 COPY --from=dependencies /usr/app/dist/ ./dist/
 COPY --from=dependencies /usr/app/node_modules/ ./node_modules/
 COPY --from=dependencies /usr/app/package.json ./
-COPY ./i18n ./i18n
-COPY ./storage ./storage
 COPY ./.env .
 
 CMD ["node", "dist/main"]
