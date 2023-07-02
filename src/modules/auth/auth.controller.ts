@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Payload } from 'src/common/decorators/payload.decorator';
@@ -20,13 +20,13 @@ export class AuthController {
     return this.service.signin(dto);
   }
 
-  @Post('login')
+  @Put('login')
   @ApiOkResponse({ type: TokenDto })
   login(@Body() dto: LoginDto) {
     return this.service.login(dto);
   }
 
-  @Post('logout')
+  @Put('logout')
   @ApiBearerAuth('jwt')
   @UseGuards(AuthGuard('jwt'))
   logout(@Payload() payload: IPayload) {
