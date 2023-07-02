@@ -2,7 +2,6 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPayload } from 'src/common/interfaces/payload.interface';
 import { In, Repository } from 'typeorm';
-import { UserTag } from '../user-tag/entities/user-tag.entity';
 import { User } from '../user/entities/user.entity';
 import { QueryResponseDto } from './dto/query-response.dto';
 import { TagResponseDto } from './dto/tag-create-response.dto';
@@ -16,8 +15,6 @@ import { TagQuery } from './queries/tag.query';
 export class TagService {
   constructor(
     @InjectRepository(Tag) private readonly tagRepo: Repository<Tag>,
-    @InjectRepository(UserTag)
-    private readonly userTagRepo: Repository<UserTag>,
     @InjectRepository(User) private readonly userRepo: Repository<User>,
   ) {}
   findOneOrFail(id: number) {
@@ -112,9 +109,7 @@ export class TagService {
     if (tag.creator !== payload.sub) {
       throw new ForbiddenException();
     }
-    const userTags = await this.userTagRepo.find({ where: { tagId: id } });
-    const userIds: string[] = userTags.map((v) => v.userId);
-    await this.userTagRepo.delete({ userId: In(userIds) });
+
     await this.tagRepo.delete(id);
   }
 }
