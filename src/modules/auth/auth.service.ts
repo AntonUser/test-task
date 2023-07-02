@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
@@ -40,7 +41,7 @@ export class AuthService {
     const { email, password } = dto;
     const user: User = await this.userService.findOneByEmail(email);
     if (!user) {
-      throw new BadRequestException('Email not found');
+      throw new NotFoundException('Email not found');
     }
 
     if (!(await bcrypt.compare(password, user.password))) {
