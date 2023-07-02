@@ -1,4 +1,11 @@
-import { Body, Controller, Delete, Get, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Payload } from 'src/common/decorators/payload.decorator';
@@ -8,8 +15,8 @@ import { UserPutDto } from './dto/user-put.dto';
 import { UserDto } from './dto/user.dto';
 import { UserService } from './user.service';
 
-@Controller('user')
-@ApiTags('/user')
+@Controller('users')
+@ApiTags('/users')
 @UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth()
 export class UserController {
@@ -20,7 +27,7 @@ export class UserController {
     return this.service.findOneOrFailWithTags(payload.sub);
   }
 
-  @Put()
+  @Patch()
   @ApiOkResponse({ type: UserPutResponseDto })
   updateMe(@Payload() payload: IPayload, @Body() dto: UserPutDto) {
     return this.service.updateUser(dto, payload.sub);
