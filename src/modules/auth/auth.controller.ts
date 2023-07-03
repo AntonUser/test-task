@@ -14,10 +14,10 @@ import { RefreshGuard } from './guards/refresh.guard';
 export class AuthController {
   constructor(private readonly service: AuthService) {}
 
-  @Post('signin')
+  @Post('signup')
   @ApiOkResponse({ type: TokenDto })
-  signin(@Body() dto: SigninDto) {
-    return this.service.signin(dto);
+  signup(@Body() dto: SigninDto) {
+    return this.service.signup(dto);
   }
 
   @Put('login')

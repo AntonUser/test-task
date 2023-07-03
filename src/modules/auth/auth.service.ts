@@ -50,7 +50,7 @@ export class AuthService {
     return this.getToken(user.uid);
   }
 
-  async signin(dto: SigninDto): Promise<TokenDto> {
+  async signup(dto: SigninDto): Promise<TokenDto> {
     const { email } = dto;
     if (await this.userService.findOneByEmail(email)) {
       throw new BadRequestException(
