@@ -7,6 +7,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { UserShortDto } from '../dto/user-short.dto';
+import { UserPutResponseDto } from '../dto/user-put-response.dto';
+import { UserDto } from '../dto/user.dto';
 
 @Entity()
 export class User {
@@ -28,5 +31,27 @@ export class User {
   @BeforeInsert()
   async hashPasswordBeforeInsert() {
     this.password = bcrypt.hashSync(this.password, 10);
+  }
+
+  async toDto(): Promise<UserDto> {
+    return {
+      email: this.email,
+      nickname: this.nickname,
+      tags: await Promise.all(this.tags.map((v) => v.toDto())),
+    };
+  }
+
+  toShortDto(): UserShortDto {
+    return {
+      uid: this.uid,
+      nickname: this.nickname,
+    };
+  }
+
+  toUserPutResponseDto(): UserPutResponseDto {
+    return {
+      email: this.email,
+      nickname: this.nickname,
+    };
   }
 }

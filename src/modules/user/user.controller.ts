@@ -23,19 +23,22 @@ export class UserController {
   constructor(private readonly service: UserService) {}
   @Get()
   @ApiOkResponse({ type: UserDto })
-  getMe(@Payload() payload: IPayload) {
+  getMe(@Payload() payload: IPayload): Promise<UserDto> {
     return this.service.findOneOrFailWithTags(payload.sub);
   }
 
   @Patch()
   @ApiOkResponse({ type: UserPutResponseDto })
-  updateMe(@Payload() payload: IPayload, @Body() dto: UserPutDto) {
+  updateMe(
+    @Payload() payload: IPayload,
+    @Body() dto: UserPutDto,
+  ): Promise<UserPutResponseDto> {
     return this.service.updateUser(dto, payload.sub);
   }
 
   @Delete()
   @ApiOkResponse({ type: UserDto })
-  delete(@Payload() payload: IPayload) {
+  delete(@Payload() payload: IPayload): Promise<void> {
     return this.service.delete(payload.sub);
   }
 }

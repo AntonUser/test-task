@@ -6,6 +6,7 @@ import { SigninDto } from '../auth/dto/signin.dto';
 import { UserPutDto } from './dto/user-put.dto';
 import { UserPutResponseDto } from './dto/user-put-response.dto';
 import * as bcrypt from 'bcrypt';
+import { UserDto } from './dto/user.dto';
 @Injectable()
 export class UserService {
   constructor(
@@ -16,17 +17,13 @@ export class UserService {
     return this.userRepo.findOne({ uid });
   }
 
-  async findOneOrFailWithTags(uid: string) {
+  async findOneOrFailWithTags(uid: string): Promise<UserDto> {
     const user = await this.userRepo.findOneOrFail(
       { uid },
       { relations: ['tags'] },
     );
 
-    return {
-      email: user.email,
-      nickname: user.nickname,
-      tags: user.tags,
-    };
+    return user.toDto();
   }
 
   async findOneByEmail(email: string): Promise<User | undefined> {
@@ -43,11 +40,12 @@ export class UserService {
       dto.password = bcrypt.hashSync(dto.password, 10);
     }
     await this.userRepo.update(uid, dto);
+
     const user = await this.userRepo.findOneOrFail({ uid });
-    return { email: user.email, nickname: user.nickname };
+    return user.toUserPutResponseDto();
   }
 
-  async delete(uid: string) {
+  async delete(uid: string): Promise<void> {
     await this.userRepo.delete(uid);
   }
 }
