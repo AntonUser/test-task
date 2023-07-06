@@ -35,19 +35,28 @@ export class TagController {
   constructor(private readonly service: TagService) {}
   @Post()
   @ApiOkResponse({ type: TagDto })
-  createTag(@Payload() payload: IPayload, @Body() dto: TagCreateDto) {
+  createTag(
+    @Payload() payload: IPayload,
+    @Body() dto: TagCreateDto,
+  ): Promise<TagDto> {
     return this.service.create(payload, dto);
   }
 
   @Get('/:id')
   @ApiOkResponse({ type: TagResponseDto })
-  findById(@Param('id') id: number, @Payload() payload: IPayload) {
+  findById(
+    @Param('id') id: number,
+    @Payload() payload: IPayload,
+  ): Promise<TagResponseDto> {
     return this.service.findOneOrFailWithCreator(id, payload);
   }
 
   @Get()
   @ApiOkResponse({ type: QueryResponseDto })
-  find(@Query() query: TagQuery, @Payload() payload: IPayload) {
+  find(
+    @Query() query: TagQuery,
+    @Payload() payload: IPayload,
+  ): Promise<QueryResponseDto> {
     return this.service.findTags(query, payload);
   }
 
@@ -57,12 +66,15 @@ export class TagController {
     @Payload() payload: IPayload,
     @Param('id') id: number,
     @Body() dto: TagUpdateDto,
-  ) {
+  ): Promise<TagResponseDto> {
     return this.service.updateTag(id, payload, dto);
   }
 
   @Delete('/:id')
-  deleteTags(@Payload() payload: IPayload, @Param('id') id: number) {
+  deleteTags(
+    @Payload() payload: IPayload,
+    @Param('id') id: number,
+  ): Promise<void> {
     return this.service.delete(id, payload);
   }
 }
