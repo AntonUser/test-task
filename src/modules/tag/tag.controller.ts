@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -26,8 +27,8 @@ import { TagDto } from './dto/tag.dto';
 import { TagQuery } from './queries/tag.query';
 import { TagService } from './tag.service';
 
-@Controller('tag')
-@ApiTags('/tag')
+@Controller('tags')
+@ApiTags('/tags')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @ApiExtraModels(TagQuery)
@@ -41,17 +42,17 @@ export class TagController {
 
   @Get('/:id')
   @ApiOkResponse({ type: TagResponseDto })
-  findById(@Param('id') id: number) {
-    return this.service.findOneOrFailWithCreator(id);
+  findById(@Param('id') id: number, @Payload() payload: IPayload) {
+    return this.service.findOneOrFailWithCreator(id, payload);
   }
 
   @Get()
   @ApiOkResponse({ type: QueryResponseDto })
-  find(@Query() qyery: TagQuery) {
-    return this.service.findTags(qyery);
+  find(@Query() query: TagQuery, @Payload() payload: IPayload) {
+    return this.service.findTags(query, payload);
   }
 
-  @Put('/:id')
+  @Patch('/:id')
   @ApiOkResponse({ type: QueryResponseDto })
   updateTag(
     @Payload() payload: IPayload,

@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPayload } from 'src/common/interfaces/payload.interface';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { QueryResponseDto } from './dto/query-response.dto';
 import { TagResponseDto } from './dto/tag-create-response.dto';
@@ -18,13 +18,17 @@ export class TagService {
     @InjectRepository(User) private readonly userRepo: Repository<User>,
   ) {}
   findOneOrFail(id: number) {
-    return this.tagRepo.findOneByOrFail({ id });
+    return this.tagRepo.findOneOrFail({ id });
   }
 
-  async findOneOrFailWithCreator(id: number): Promise<TagResponseDto> {
-    const tag: Tag = await this.tagRepo.findOneByOrFail({ id });
-    const user: User = await this.userRepo.findOneByOrFail({
-      uid: tag.creator,
+  async findOneOrFailWithCreator(
+    id: number,
+    payload: IPayload,
+  ): Promise<TagResponseDto> {
+    const user = await this.userRepo.findOneOrFail(payload.sub);
+    const tag: Tag = await this.tagRepo.findOneOrFail({
+      id,
+      user,
     });
 
     return {
@@ -38,9 +42,8 @@ export class TagService {
   }
 
   async create(payload: IPayload, dto: TagCreateDto): Promise<TagDto> {
-    const tag = await this.tagRepo.save(
-      this.tagRepo.create({ ...dto, creator: payload.sub }),
-    );
+    const user = await this.userRepo.findOne(payload.sub);
+    const tag = await this.tagRepo.save(this.tagRepo.create({ ...dto, user }));
     return {
       id: tag.id,
       name: tag.name,
@@ -48,9 +51,14 @@ export class TagService {
     };
   }
 
-  async findTags(query: TagQuery): Promise<QueryResponseDto> {
+  async findTags(
+    query: TagQuery,
+    payload: IPayload,
+  ): Promise<QueryResponseDto> {
     const builder = this.tagRepo
       .createQueryBuilder('tag')
+      .leftJoinAndSelect('tag.user', 'user')
+      .where('user.uid = :uid', { uid: payload.sub })
       .offset(+query.offset)
       .limit(+query.length);
     if (query.sortByName === '') {
@@ -65,9 +73,8 @@ export class TagService {
     return {
       data: await Promise.all(
         tags.map(async (v): Promise<TagResponseDto> => {
-          const user: User = await this.userRepo.findOneBy({ uid: v.creator });
           return {
-            creator: { uid: user.uid, nickname: user.nickname },
+            creator: { uid: v.user.uid, nickname: v.user.nickname },
             name: v.name,
             sortOrder: v.sortOrder.toString(),
           };
@@ -86,18 +93,16 @@ export class TagService {
     payload: IPayload,
     dto: TagUpdateDto,
   ): Promise<TagResponseDto> {
-    let tag = await this.tagRepo.findOneByOrFail({ id });
-    if (tag.creator !== payload.sub) {
-      throw new ForbiddenException();
+    let tag = await this.tagRepo.findOneOrFail({ id }, { relations: ['user'] });
+    if (tag.user.uid !== payload.sub) {
+      throw new ForbiddenException(`The tag does not belong to you`);
     }
     tag = await this.tagRepo.save({ ...tag, ...dto });
-    const user: User = await this.userRepo.findOneByOrFail({
-      uid: tag.creator,
-    });
+
     return {
       creator: {
-        uid: user.uid,
-        nickname: user.nickname,
+        uid: tag.user.uid,
+        nickname: tag.user.nickname,
       },
       name: tag.name,
       sortOrder: tag.sortOrder.toString(),
@@ -105,8 +110,8 @@ export class TagService {
   }
 
   async delete(id: number, payload: IPayload) {
-    const tag = await this.tagRepo.findOneByOrFail({ id });
-    if (tag.creator !== payload.sub) {
+    const tag = await this.tagRepo.findOneOrFail({ id });
+    if (tag.name /*crator */ !== payload.sub) {
       throw new ForbiddenException();
     }
 
